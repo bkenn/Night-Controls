@@ -1,10 +1,12 @@
 package us.nightware.controls
 
 import javafx.event.EventTarget
+import javafx.scene.Node
 import javafx.scene.layout.VBox
 import tornadofx.*
 import us.nightware.controls.card.Card
 import us.nightware.controls.card.CardHolder
+import kotlin.reflect.KClass
 
 fun EventTarget.cardholder(op: (VBox.() -> Unit) = {}) : CardHolder {
     val cardHolder = CardHolder()
@@ -23,9 +25,10 @@ fun EventTarget.card(op: (Card.() -> Unit) = {}) : Card {
     return opcr(this, card ,op)
 }
 
-inline fun <reified T: UIComponent> EventTarget.card(uiComponent: T, noinline op: (Card.() -> Unit) = {}): Card {
+fun <T: UIComponent> EventTarget.card(uiComponent: T, op: (Card.() -> Unit) = {}): Card {
     val card = Card()
-    card.add(find<T>().root)
+    card.add(uiComponent.root)
     return opcr(this, card ,op)
 }
 
+fun EventTarget.card(uiComponent: KClass<out UIComponent>, op: (Card.() -> Unit) = {}) = card(find(uiComponent), op)
